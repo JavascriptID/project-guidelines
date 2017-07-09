@@ -22,36 +22,36 @@ If you want to share a best practice, or think one of these guidelines  should b
 We use [Feature-branch-workflow](https://www.atlassian.com/git/tutorials/comparing-workflows#feature-branch-workflow) with [Interactive Rebasing](https://www.atlassian.com/git/tutorials/merging-vs-rebasing#the-golden-rule-of-rebasing) and some elements of [Gitflow](https://www.atlassian.com/git/tutorials/comparing-workflows#gitflow-workflow) (naming and having a develop branch). The main steps are as follow:
 
 * Checkout a new feature/bug-fix branch
-    ```
+    ```sh
     git checkout -b <branchname>
     ```
 * Make Changes
-    ```
+    ```sh
     git add
-    git commit -m "description of changes"
+    git commit -m "<description of changes>"
     ```
 * Sync with remote to get changes you’ve missed
-    ```
+    ```sh
     git checkout develop
     git pull
     ```
 * Update your feature branch with latest changes from develop by interactive rebase ([Here is why](https://www.atlassian.com/git/tutorials/merging-vs-rebasing#the-golden-rule-of-rebasing))
-    ```
+    ```sh
     git checkout <branchname>
     git rebase -i develop
     ```
 * If you don’t have conflict skip this step. If you have conflicts, [resolve them](https://help.github.com/articles/resolving-a-merge-conflict-using-the-command-line/)  and continue rebase
-    ```
+    ```sh
 	git add <file1> <file2> ...
     git rebase --continue
     ```
 * Push your branch. Rebase will change history, so you'll have to use `-f` to force changes into the remote branch. If someone else is working on your branch, use the less destructive `--force-with-lease` ([Here is why](https://developer.atlassian.com/blog/2015/04/force-with-lease/)).
-    ```
+    ```sh
     git push -f
     ```
-* Make a Pull Request
-* Pull request will be accepted, merged and close by reviewer
-* Remove your local feature branch if you're done
+* Make a Pull Request.
+* Pull request will be accepted, merged and close by reviewer.
+* Remove your local feature branch if you're done.
 
 
 ### 1.2 Some Git Rules
@@ -59,10 +59,10 @@ There are a set of rules to keep in mind:
 * Perform work in a feature branch.
 * Make pull requests to `develop`
 * Never push into `develop` or `master` branch.
-* Update your `develop` and do a interactive rebase before pushing your feature and making a PR
+* Update your `develop` and do a interactive rebase before pushing your feature and making a Pull Request
 * Resolve potential conflicts while rebasing and before making a Pull Request
 * Delete local and remote feature branches after merging.
-* Before making a PR, make sure your feature branch builds successfully and passes all tests (including code style checks).
+* Before making a Pull Request, make sure your feature branch builds successfully and passes all tests (including code style checks).
 * Use [this .gitignore file](./.gitignore).
 * Protect your `develop` and `master` branch (How to in [Github](https://help.github.com/articles/about-protected-branches/) and [Bitbucket](https://confluence.atlassian.com/bitbucketserver/using-branch-permissions-776639807.html)).
 
@@ -83,8 +83,11 @@ Having a good guideline for creating commits and sticking to it makes working wi
 * For projects with more than one repository, provide links to them in their respective `README.md` files.
 * Keep `README.md` updated as project evolves.
 * Comment your code. Try to make it as clear as possible what you are intending with each major section.
-* Comment small sections of code if you think it's not self explanatory.
-* Keep your comments relevant as code evolves.
+* If there is an open discussion on github or stackoverflow about the code or approach you're using, include the link in your comment, 
+* Don't use commenting as an excuse for a bad code. Keep your code clean.
+* Don't use clean code as an excuse to not comment at all.
+* Comment even small sections of code if you think it's not self explanatory.
+* Keep comments relevant as your code evolves.
 
 ## 3. Environments <a name="environments"></a>
 * Depending on project size, define separate `development`, `test` and `production` environments.
@@ -166,8 +169,8 @@ Before using a package, check its GitHub. Look for the number of open issues, da
 * Use stage-1 and higher JavaScript (modern) syntax for new projects. For old project stay consistent with existing syntax unless you intend to modernise the project.
 * Include code style check before build process.
 * Use [ESLint - Pluggable JavaScript linter](http://eslint.org/) to enforce code style.
-* Use [Airbnb JavaScript Style Guide](https://github.com/airbnb/javascript) for JavaScript.  [Read more · GitBook](https://www.gitbook.com/book/duk/airbnb-javascript-guidelines/details).
-* Use [Flow type style check rules for ESLint.](https://github.com/gajus/eslint-plugin-flowtype) for [FlowType](https://flow.org/).
+* We use [Airbnb JavaScript Style Guide](https://github.com/airbnb/javascript) for JavaScript, [Read more](https://www.gitbook.com/book/duk/airbnb-javascript-guidelines/details). Use the javascript style guide required by the project or your team.
+* We use [Flow type style check rules for ESLint.](https://github.com/gajus/eslint-plugin-flowtype) when using [FlowType](https://flow.org/).
 * Use `.eslintignore` to exclude file or folders from code style check.
 * Remove any of your `eslint` disable comments before making a Pull Request.
 * Always use  `//TODO:`  comments to remind yourself and others about an unfinished job.
@@ -230,7 +233,7 @@ If there is a relation between resources like  employee to a company, use `id` i
 * **POST**	`/schools `					Should create a new school and return the details of the new school created. Use POST on collection-URLs
 
 ### 9.4 API Versioning
-When your APIs are public other third parties, upgrading the APIs with some breaking change would also lead to breaking the existing products or services using your APIs. Using versions in your URL can prevent that from happening:
+When your APIs are public for other third parties, upgrading the APIs with some breaking change would also lead to breaking the existing products or services using your APIs. Using versions in your URL can prevent that from happening:
 `http://api.domain.com/v1/schools/3/students	`
 
 ### 9.5 Send feedbacks
@@ -267,21 +270,21 @@ Note: Keep security exception messages as generic as possible. For instance, Ins
 
 #### 9.5.2 Align your feedback with HTTP codes.
 ##### The client and API worked (success – 2xx response code)  
-* `200` HTTP response representing success for GET, PUT or POST.
-* `201` Created This status code should be returned whenever the new instance is created. E.g on creating a new instance, using POST method, should always return `201` status code.
-* `204` No Content represents the request is successfully processed, but has not returned any content. DELETE can be a good example of this. If there is any error, then the response code would be not be of 2xx Success Category but around 4xx Client Error category.
+* `200 OK` This HTTP response represents success for `GET`, `PUT` or `POST` requests.
+* `201 Created` This status code should be returned whenever a new instance is created. E.g on creating a new instance, using `POST` method, should always return `201` status code.
+* `204 No Content` represents the request was successfully processed, but has not returned any content. `DELETE` can be a good example of this. If there is any error, then the response code would be not be of 2xx Success Category but around 4xx Client Error category.
 
 ##### The client application behaved incorrectly (client error – 4xx response code)
-* `400` Bad Request indicates that the request by the client was not processed, as the server could not understand what the client is asking for.
-* `401` Unauthorised indicates that the client is not allowed to access resources, and should re-request with the required credentials.
-* `403` Forbidden indicates that the request is valid and the client is authenticated, but the client is not allowed access the page or resource for any reason.
-* `404` Not Found indicates that the requested resource is not available now.
-* `406` Not Acceptable response. A lack of Content-Type header or an unexpected Content-Type header should result in the server rejecting the content
-* `410` Gone indicates that the requested resource is no longer available which has been intentionally moved.
+* `400 Bad Request` indicates that the request by the client was not processed, as the server could not understand what the client is asking for.
+* `401 Unauthorized` indicates that the request lacks valid credentials needed to access the needed resources, and the client should re-request with the required credentials.
+* `403 Forbidden` indicates that the request is valid and the client is authenticated, but the client is not allowed access the page or resource for any reason.
+* `404 Not Found` indicates that the requested resource was not found. 
+* `406 Not Acceptable` A response matching the list of acceptable values defined in Accept-Charset and Accept-Language headers cannot be served.
+* `410 Gone` indicates that the requested resource is no longer available and has been intentionally and permanently moved.
 
 ##### The API behaved incorrectly (server error – 5xx response code)
-* `500` Internal Server Error indicates that the request is valid, but the server is totally confused and the server is asked to serve some unexpected condition.
-* `503` Service Unavailable indicates that the server is down or unavailable to receive and process the request. Mostly if the server is undergoing maintenance.
+* `500 Internal Server Error` indicates that the request is valid, but the server could not fulfill it due to some unexpected condition.
+* `503 Service Unavailable` indicates that the server is down or unavailable to receive and process the request. Mostly if the server is undergoing maintenance or facing a temporary overload.
 
 
 ### 9.6 Resource parameters and metadata
@@ -338,9 +341,11 @@ Optional: photo_id=[alphanumeric]
     ```
 * Error Response, Most endpoints have many ways to fail. From unauthorised access, to wrongful parameters etc. All of those should be listed here. It might seem repetitive, but it helps prevent assumptions from being made. For example
     ```json
-    "Code": 403
-    "message" : "Authentication failed",
-    "description" : "Invalid username or password"
+    {
+        "code": 403,
+        "message" : "Authentication failed",
+        "description" : "Invalid username or password"
+    }   
     ```
 
 

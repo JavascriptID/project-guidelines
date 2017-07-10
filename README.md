@@ -1,5 +1,6 @@
 
-![Logo of the project](./logo.png)
+[<img src="./images/logo.png">](http://wearehive.co.uk/)
+
 
 # Project Guidelines &middot; [![PRs Welcome](https://img.shields.io/badge/PRs-welcome-brightgreen.svg?style=flat-square)](http://makeapullrequest.com)
 > While developing a new project is like rolling on a green field for you, maintaining it is a potential dark twisted nightmare for someone else.
@@ -17,9 +18,50 @@ If you want to share a best practice, or think one of these guidelines  should b
 - [Licensing](#licensing)
 
 ## 1. Git <a name="git"></a>
+### 1.1 Some Git Rules
+There are a set of rules to keep in mind:
+* Perform work in a feature branch.
+    
+    _why:_
+    >Because this way all work is done in isolation on a dedicated branch rather than the main branch. It allows you to submit multiple pull requests without confusion. You can iterate without polluting the master branch with potentially unstable, unfinished code. [read more...](https://www.atlassian.com/git/tutorials/comparing-workflows#feature-branch-workflow)
+* Branch out from `develop`
+    
+    _why:_
+    >This way, you can make sure that code in master will almost always build without problems, and can be mostly used directly for releases (this might be overkill for some projects).
 
-### 1.1 Git Workflow
-We use [Feature-branch-workflow](https://www.atlassian.com/git/tutorials/comparing-workflows#feature-branch-workflow) with [Interactive Rebasing](https://www.atlassian.com/git/tutorials/merging-vs-rebasing#the-golden-rule-of-rebasing) and some elements of [Gitflow](https://www.atlassian.com/git/tutorials/comparing-workflows#gitflow-workflow) (naming and having a develop branch). The main steps are as follow:
+* Never push into `develop` or `master` branch. Make a Pull Request.
+    
+    _why:_
+    > It notifies team members that they have completed a feature. It also enables easy peer-review of the code and dedicates forum for discussing the proposed feature
+
+* Update your local `develop` branch and do a interactive rebase before pushing your feature and making a Pull Request
+
+    _why:_
+    > Rebasing will merge in the requested branch (`master` or `develop`) and apply the commits that you have made locally to the top of the history without creating a merge commit (assuming there were no conflicts). Resulting in a nice and clean history. [read more ...](https://www.atlassian.com/git/tutorials/merging-vs-rebasing)
+
+* Resolve potential conflicts while rebasing and before making a Pull Request
+* Delete local and remote feature branches after merging.
+    
+    _why:_
+    > It will clutter up your list of branches with dead branches.It insures you only ever merge the branch back into (`master` or `develop`) once. Feature branches should only exist while the work is still in progress.
+
+* Before making a Pull Request, make sure your feature branch builds successfully and passes all tests (including code style checks).
+    
+    _why:_
+    > You are about to add your code to a stable branch. If your feature-branch tests fail, there is a high chance that your destination branch build will fail too. Additionaly you need to apply code style check before making a Pull Request. It aids readability and reduces the chance of formatting fixes being mingled in with actual changes.
+
+* Use [this .gitignore file](./.gitignore).
+    
+    _why:_
+    > It already has a list of system files that should not be sent with your code into remote repository. In addition, it excludes setting folders and files for mostly used editors, as well as most common dependency folders.
+
+* Protect your `develop` and `master` branch .
+  
+    _why:_
+    > It protects your production-ready branches from reciving unexpected and irreversible changes. read more... [Github](https://help.github.com/articles/about-protected-branches/) and [Bitbucket](https://confluence.atlassian.com/bitbucketserver/using-branch-permissions-776639807.html)
+
+### 1.2 Git Workflow
+Because of most of the reasons above, we use [Feature-branch-workflow](https://www.atlassian.com/git/tutorials/comparing-workflows#feature-branch-workflow) with [Interactive Rebasing](https://www.atlassian.com/git/tutorials/merging-vs-rebasing#the-golden-rule-of-rebasing) and some elements of [Gitflow](https://www.atlassian.com/git/tutorials/comparing-workflows#gitflow-workflow) (naming and having a develop branch). The main steps are as follow:
 
 * Checkout a new feature/bug-fix branch
     ```sh
@@ -28,49 +70,57 @@ We use [Feature-branch-workflow](https://www.atlassian.com/git/tutorials/compari
 * Make Changes
     ```sh
     git add
-    git commit -m "<description of changes>"
+    git commit -a
     ```
+    _why:_
+    > `git commit -a` will start an editor which lets your separate the subject from the body. Read more about it in *section 1.3*.
+
 * Sync with remote to get changes you’ve missed
     ```sh
     git checkout develop
     git pull
     ```
-* Update your feature branch with latest changes from develop by interactive rebase ([Here is why](https://www.atlassian.com/git/tutorials/merging-vs-rebasing#the-golden-rule-of-rebasing))
+    
+    _why:_
+    > This will give you a chance to deal with conflicts on your machine while rebasing(later) rather than creating a Pull Request that contains conflicts.
+    
+* Update your feature branch with latest changes from develop by interactive rebase
     ```sh
     git checkout <branchname>
-    git rebase -i develop
+    git rebase -i --autosquash develop
     ```
+    
+    _why:_
+    > You can use --autosquash to squash all your commits to a single commit. Nobody wants many commits for a single feature in develop branch [read more...](https://robots.thoughtbot.com/autosquashing-git-commits)
+    
 * If you don’t have conflict skip this step. If you have conflicts, [resolve them](https://help.github.com/articles/resolving-a-merge-conflict-using-the-command-line/)  and continue rebase
     ```sh
 	git add <file1> <file2> ...
     git rebase --continue
     ```
-* Push your branch. Rebase will change history, so you'll have to use `-f` to force changes into the remote branch. If someone else is working on your branch, use the less destructive `--force-with-lease` ([Here is why](https://developer.atlassian.com/blog/2015/04/force-with-lease/)).
+* Push your branch. Rebase will change history, so you'll have to use `-f` to force changes into the remote branch. If someone else is working on your branch, use the less destructive `--force-with-lease`.
     ```sh
     git push -f
     ```
+    
+    _why:_
+    > When you do a rebase, you are changing the history on your feature branch. As a result, Git will reject normal `git push`. Instead, you'll need to use the -f or --force flag. [read more...](https://developer.atlassian.com/blog/2015/04/force-with-lease/)
+    
+    
 * Make a Pull Request.
 * Pull request will be accepted, merged and close by reviewer.
 * Remove your local feature branch if you're done.
-
-
-### 1.2 Some Git Rules
-There are a set of rules to keep in mind:
-* Perform work in a feature branch.
-* Make pull requests to `develop`
-* Never push into `develop` or `master` branch.
-* Update your `develop` and do a interactive rebase before pushing your feature and making a Pull Request
-* Resolve potential conflicts while rebasing and before making a Pull Request
-* Delete local and remote feature branches after merging.
-* Before making a Pull Request, make sure your feature branch builds successfully and passes all tests (including code style checks).
-* Use [this .gitignore file](./.gitignore).
-* Protect your `develop` and `master` branch (How to in [Github](https://help.github.com/articles/about-protected-branches/) and [Bitbucket](https://confluence.atlassian.com/bitbucketserver/using-branch-permissions-776639807.html)).
 
 ### 1.3 Writing good commit messages
 
 Having a good guideline for creating commits and sticking to it makes working with Git and collaborating with others a lot easier. Here are some rules of thumb ([source](https://chris.beams.io/posts/git-commit/#seven-rules)):
 
- * Separate the subject from the body with a blank line
+ * **Separate the subject from the body with a newline between the two**
+
+    _why:_
+    > Having a `body` section lets you explain the context
+that's useful for a code reviewer. if you can link to an associated Jira ticket, GitHub issue, Basecamp to-do, etc. Also most desktop Git clients have clear separation between message line and body in their GUI.
+
  * Limit the subject line to 50 characters
  * Capitalize the subject line
  * Do not end the subject line with a period
@@ -86,54 +136,148 @@ Having a good guideline for creating commits and sticking to it makes working wi
 * If there is an open discussion on github or stackoverflow about the code or approach you're using, include the link in your comment, 
 * Don't use commenting as an excuse for a bad code. Keep your code clean.
 * Don't use clean code as an excuse to not comment at all.
-* Comment even small sections of code if you think it's not self explanatory.
 * Keep comments relevant as your code evolves.
 
-## 3. Environments <a name="environments"></a>
+## 3. Environments<a name="environments"></a>
 * Depending on project size, define separate `development`, `test` and `production` environments.
-* Load your deployment specific configurations from environment variables and never add them to the codebase as constants, [look at this sample](./config.sample.js).
-*  Your config should be correctly separated from the app internals as if the codebase could be made public at any moment.  Use `.env` files to store your variables and add them to `.gitignore` to be excluded from your code base because of course, you want the environment to provide them. Instead commit a `.env.example`  which serves as a guide for developers to know which environment variables the project needs. It is important to remember that this setup should only be used for development. For production you should still set your environment variables in the standard way.
-* It’s recommended to validate environment variables before your app starts.  [Look at this sample](./configWithTest.sample.js) using `joi` to validate provided values.
+
+    _why:_
+    > Different data, tokens, APIs, ports etc... may be needed on different environments. You may want an isolated `development` mode that calls fake API which returns predictable data, making both automated and manually testing much easier. Or you may want to enable Google Analytics only on `production` and so on. [read more...](https://stackoverflow.com/questions/8332333/node-js-setting-up-environment-specific-configs-to-be-used-with-everyauth)
+
+
+* Load your deployment specific configurations from environment variables and never add them to the codebase as constants, [look at this sample](./samples/config.sample.js).
+
+    _why:_
+    > You have tokens, passwords and other valuable information in there. Your config should be correctly separated from the app internals as if the codebase could be made public at any moment.
+
+    _How:_
+    >Use `.env` files to store your variables and add them to `.gitignore` to be excluded. Instead commit a `.env.example`  which serves as a guide for developers. For production you should still set your environment variables in the standard way.
+    [read more](https://medium.com/@rafaelvidaurre/managing-environment-variables-in-node-js-2cb45a55195f)
+
+* It’s recommended to validate environment variables before your app starts.  [Look at this sample](./samples/configWithTest.sample.js) using `joi` to validate provided values.
+    
+    _why:_
+    > It may save others from hours of troubleshooting.
 
 ### 3.1 Consistent dev environments:
-* Set `engines` in `package.json` to specify the version of node your project works on.
+* Set your node version in `engines` in `package.json`
+    
+    _why:_
+    > It lets others know the version of node the project works on. [read more...](https://docs.npmjs.com/files/package.json#engines)
+
 * Additionally, use `nvm` and create a  `.nvmrc`  in your project root. Don't forget to mention it in the documentation
+
+    _why:_
+    > Any one who uses `nvm` can simply use `nvm use` to switch to the suitable node version. [read more...](https://github.com/creationix/nvm)
+
 * You can also use a `preinstall` script that checks node and npm versions
+
+    _why:_
+    > Some dependencies may fail when used by newer versions of node.
+    
 * Use Docker images provided it doesn't make things more complicated
+
+    _why:_
+    > It can give you a consistent environment across the entire workflow. Without much neeed to fiddle with libs, dependencies or configs. [read more...](https://hackernoon.com/how-to-dockerize-a-node-js-application-4fbab45a0c19)
+
 * Use local modules instead of using globally installed modules
+
+    _why:_
+    > Lets you share your tooling with your colleague instead of expecting them to have it on their systems.
 
 ## 4. Dependencies <a name="dependencies"></a>
 Before using a package, check its GitHub. Look for the number of open issues, daily downloads and number of contributors as well as the date the package was last updated.
 
 * If less known dependency is needed, discuss it with the team before using it.
-* Keep track of your currently available packages: e.g., `npm ls --depth=0` ([documentation](https://docs.npmjs.com/cli/ls)).
-* See if any of your packages have become unused or irrelevant: `depcheck` ([documentation](https://www.npmjs.com/package/depcheck)).
-* Check download statistics to see if the dependency is heavily used by the community: `npm-stat` ([documentation](https://npm-stat.com/)).
-* Check to see if the dependency has a good, mature version release frequency with a large number of maintainers: e.g., `npm view async` ([documentation](https://docs.npmjs.com/cli/view)).
-* Always make sure your app works with the latest versions of dependencies without breaking: `npm outdated` ([documentation](https://docs.npmjs.com/cli/outdated)).
+* Keep track of your currently available packages: e.g., `npm ls --depth=0`. [read more...](https://docs.npmjs.com/cli/ls)
+* See if any of your packages have become unused or irrelevant: `depcheck`. [read more...](https://www.npmjs.com/package/depcheck)
+    
+    _why:_
+    > The is a potential risk that you import this unused library in your bundle and ship it for production and as the result increase your bundle size. Find them, get rid of them.
+
+* Check download statistics to see if the dependency is heavily used by the community: `npm-stat`. [read more...](https://npm-stat.com/)
+    
+    _why:_
+    > More usage mostly means more contributors, which usually means better maintenance which results in bugs get discovered and fixed way quicker.
+
+* Check to see if the dependency has a good, mature version release frequency with a large number of maintainers: e.g., `npm view async`. [read more...](https://docs.npmjs.com/cli/view)
+
+    _why:_
+    > Having loads of contributors wont be as effective, if maintainers dont merge those fixes and patches quickly enough.
+
+* Always make sure your app works with the latest versions of dependencies without breaking: `npm outdated`. [read more...](https://docs.npmjs.com/cli/outdated)
+
+    _why:_
+    > Dependency updates sometimes have breaking changes, and you should be aware of that as quick as possible. Always check their release notes. Update your dependencies one by one, that makes troubleshooting easier (If breaking changes happens). Use cool tools such as [npm-check-updates](https://github.com/tjunnone/npm-check-updates).
+
 * Check to see if the package has known security vulnerabilities with, e.g., [Snyk](https://snyk.io/test?utm_source=risingstack_blog).
 
+
 ### 4.1 Consistent dependencies:
-* Use `package-lock.json` on `npm@5` or higher
-* For older versions of `npm`, use `—save --save-exact` when installing a new dependency and create `npm-shrinkwrap.json` before publishing.
-* Alternatively you can use `Yarn` and make sure to mention it in `README.md`. Your lock file and `package.json` should have the same versions after each dependency update.
-* Read more here: [package-locks | npm Documentation](https://docs.npmjs.com/files/package-locks)
+
+* Make sure your team member gets the exact same dependencies as you
+
+    _why:_
+    > Because you want the code to behave as expected and identical in any development machine [read more...](https://medium.com/@kentcdodds/why-semver-ranges-are-literally-the-worst-817cdcb09277)
+
+    _how:_
+    > Use `package-lock.json` on `npm@5` or higher
+
+    _I don't have npm@5:_
+    > Alternatively you can use `Yarn` and make sure to mention it in `README.md`. Your lock file and `package.json` should have the same versions after each dependency update. [read more...](https://yarnpkg.com/en/)
+
+    _I don't like the name `Yarn`:_
+    > Too bad. For older versions of `npm`, use `—save --save-exact` when installing a new dependency and create `npm-shrinkwrap.json` before publishing. [read more...](https://docs.npmjs.com/files/package-locks)
+
 
 ## 5. Testing <a name="testing"></a>
-* Have a test mode environment if needed.
-* Place your test files next to the tested modules using `*.test.js` or `*.spec.js` naming convention, like `module_name.spec.js`
+
+* Have a `test` mode environment if needed.
+
+    _why:_
+    > Some believe for unit testing `development` mode and for end to end testing  `production` mode will be enough. While this is partly true, there are some exceptions. One example is you may not want to enable analytical information on a 'production' mode and pollute someone's dashboard with test data. Or your API may apply rate limits in `production` and block your many test calls. 
+
+* Place your test files next to the tested modules using `*.test.js` or `*.spec.js` naming convention, like `moduleName.spec.js`
+
+    _why:_
+    > You don't want to dig through a folder structure every time you have to find a unit test. Additionally, this naming convention is standard now and gets picked up by most JavaScript testing frameworks.
+    
+
 * Put your additional test files into a separate test folder to avoid confusion.
+
+    _why:_
+    > Some test files don't particularly relate to any specific implementation file. You have to put it in a folder that is most likely to be found by other developers: `__test__` folder. This name: `__test__`  is also standard now and gets picked up by most JavaScript testing frameworks.
+
 * Write testable code, avoid side effects, extract side effects, write pure functions
-* Don’t write too many tests to check types, instead use a static type checker
+
+    _why:_
+    > You want to test a business logic as a separate units. You have to "minimize the impact of randomness and non-deterministic processes on the reliability of your code". [read more...](https://medium.com/javascript-scene/tdd-the-rite-way-53c9b46f45e3)
+
+
+* Don’t write tests to check types, instead use a static type checker
+
+    _why:_
+    > Sometimes you may need a Static type checker. It brings a certain level of reliability to your code. [read more...](https://medium.freecodecamp.org/why-use-static-types-in-javascript-part-1-8382da1e0adb)
+
+
 * Run tests locally before making any pull requests to `develop`.
+
+     _why:_
+    > Because you don't want to be the one who caused production-ready branch build to fail.
+
 * Document your tests, with instructions.
 
+     _why:_
+    > Other developers or DevOps experts may get desperate to know where these stuff are and how to run them.
+
 ## 6. Structure and Naming <a name="structure-and-naming"></a>
-* Organize your files around product features / pages / components, not roles
+* Organize your files around product features / pages / components, not roles. Also, place your test files next to their implementation.
 
-**Bad**
 
-```
+
+    **Bad**
+
+    ```
     .
     ├── controllers
     |   ├── product.js
@@ -141,11 +285,11 @@ Before using a package, check its GitHub. Look for the number of open issues, da
     ├── models
     |   ├── product.js
     |   └── user.js
-```
+    ```
 
-**Good**
+    **Good**
 
-```
+    ```
     .
     ├── product
     |   ├── index.js
@@ -155,24 +299,76 @@ Before using a package, check its GitHub. Look for the number of open issues, da
     |   ├── index.js
     |   ├── user.js
     |   └── user.test.js
-```
-* Place your test files next to their implementation.
+    ```
+
+    _why:_
+    > Instead of a long list of files You will create small modules that encapsulate one responsibility including its test and so on. It gets much easier to navigate through and things can be found at a glance 
+    
 * Put your additional test files to a separate test folder to avoid confusion.
-* Use a `./config` folder. Values to be used in config files are provided by environment variables.
-* Put your scripts in a `./scripts` folder. This includes `bash` and `node` scripts for database synchronisation, build and bundling and so on.
+
+    _why:_
+    > Other developers or DevOps experts may get desperate to know where these stuff are and how to run them.
+
+* Use a `./config` folder and don't make different config files for different environments.
+
+    _why:_
+    >When you break down a config file for different purposes (database, API and so on); putting them in a folder with a very recoginzable name such as `config` makes sense. Just remember not to make different config files for different environments. It doesn't scale cleanly. As more deploys of the app are created, new environment names are necessary.
+    Values to be used in config files should provided by environment variables. [read more...](https://medium.com/@fedorHK/no-config-b3f1171eecd5)
+    
+
+* Put your scripts in a `./scripts` folder. This includes `bash` and `node` scripts.
+
+    _why:_
+    >It's very likely you may end up with more than one script. Production build, Development build, database synchronisation and so on.
+    
+
 * Place your build output in a `./build` folder. Add `build/` to `.gitignore`.
+
+    _why:_
+    >Name it what you like, `dist` is also cool. But make sure that keep it consistent with your team. Whet gets in there is most likely generated  (bundled, compiled, transpiled) or moved there. What you can generate, your teammates should be able to generate too, so there is no point commiting them into your remote repository. 
+
 * Use `PascalCase' 'camelCase` for filenames and directory names. Use  `PascalCase`  only for Components.
+
 * `CheckBox/index.js` should have the `CheckBox` component, as could `CheckBox.js`, but **not** `CheckBox/CheckBox.js` or `checkbox/CheckBox.js` which are redundant.
+
 * Ideally the directory name should match the name of the default export of `index.js`.
 
+    _why:_
+    > Then you can expect what component or module you will receive by simply just importing its parent folder.   
+
 ## 7. Code style <a name="code-style"></a>
-* Use stage-1 and higher JavaScript (modern) syntax for new projects. For old project stay consistent with existing syntax unless you intend to modernise the project.
-* Include code style check before build process.
+* Use stage-2 and higher JavaScript (modern) syntax for new projects. For old project stay consistent with existing syntax unless you intend to modernise the project.
+
+    _why:_
+    > This is all up to you. We use transpilers to use advantages of new syntax. stage-2 is more likely to eventually become part of the spec with only minor revisions. 
+
+* Include code style check in your build process.
+
+    _why:_
+    > Breaking your build is one way of enforcing code style to your code. It prevents you from taking it less seriously. Do it for both client and server-side code. [read more...](https://www.robinwieruch.de/react-eslint-webpack-babel/)
+
 * Use [ESLint - Pluggable JavaScript linter](http://eslint.org/) to enforce code style.
+
+    _Why:_
+    > We simply prefer `eslint`, you don't have to. It has more number of rules supported, ability to configure the rules, and ability to add custom rules.
+
 * We use [Airbnb JavaScript Style Guide](https://github.com/airbnb/javascript) for JavaScript, [Read more](https://www.gitbook.com/book/duk/airbnb-javascript-guidelines/details). Use the javascript style guide required by the project or your team.
+
 * We use [Flow type style check rules for ESLint.](https://github.com/gajus/eslint-plugin-flowtype) when using [FlowType](https://flow.org/).
+
+    _Why:_
+    > Flow introduces few syntaxes that also need to follow certain code style and be checked.
+
 * Use `.eslintignore` to exclude file or folders from code style check.
+
+    _Why:_
+    > You don't have to pollute your code with `eslint-disable` comments whenever you need to exclude couple of files from style checking.
+
 * Remove any of your `eslint` disable comments before making a Pull Request.
+
+    _Why:_
+    > It's normal to disable style check while working on a code block to focus more on the logic. Just remember to remove those `eslint-disable` comments and follow the rules.
+
 * Always use  `//TODO:`  comments to remind yourself and others about an unfinished job.
 * Always comment and keep them relevant as code changes.
 * Remove commented block of code when possible.

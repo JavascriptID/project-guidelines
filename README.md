@@ -145,7 +145,7 @@ that's useful for a code reviewer. if you can link to an associated Jira ticket,
     > Different data, tokens, APIs, ports etc... may be needed on different environments. You may want an isolated `development` mode that calls fake API which returns predictable data, making both automated and manually testing much easier. Or you may want to enable Google Analytics only on `production` and so on. [read more...](https://stackoverflow.com/questions/8332333/node-js-setting-up-environment-specific-configs-to-be-used-with-everyauth)
 
 
-* Load your deployment specific configurations from environment variables and never add them to the codebase as constants, [look at this sample](./samples/config.sample.js).
+* Load your deployment specific configurations from environment variables and never add them to the codebase as constants, [look at this sample](./config.sample.js).
 
     _why:_
     > You have tokens, passwords and other valuable information in there. Your config should be correctly separated from the app internals as if the codebase could be made public at any moment.
@@ -154,7 +154,7 @@ that's useful for a code reviewer. if you can link to an associated Jira ticket,
     >Use `.env` files to store your variables and add them to `.gitignore` to be excluded. Instead commit a `.env.example`  which serves as a guide for developers. For production you should still set your environment variables in the standard way.
     [read more](https://medium.com/@rafaelvidaurre/managing-environment-variables-in-node-js-2cb45a55195f)
 
-* It’s recommended to validate environment variables before your app starts.  [Look at this sample](./samples/configWithTest.sample.js) using `joi` to validate provided values.
+* It’s recommended to validate environment variables before your app starts.  [Look at this sample](./configWithTest.sample.js) using `joi` to validate provided values.
     
     _why:_
     > It may save others from hours of troubleshooting.
@@ -268,7 +268,7 @@ Before using a package, check its GitHub. Look for the number of open issues, da
 * Document your tests, with instructions.
 
      _why:_
-    > Other developers or DevOps experts may get desperate to know where these stuff are and how to run them.
+    > It's a handy note you leave behind for other developers or DevOps experts or QA or anyone who gets lucky enough to work on your code.
 
 ## 6. Structure and Naming <a name="structure-and-naming"></a>
 * Organize your files around product features / pages / components, not roles. Also, place your test files next to their implementation.
@@ -302,30 +302,30 @@ Before using a package, check its GitHub. Look for the number of open issues, da
     ```
 
     _why:_
-    > Instead of a long list of files You will create small modules that encapsulate one responsibility including its test and so on. It gets much easier to navigate through and things can be found at a glance 
-    
+    > Instead of a long list of files, you will create small modules that encapsulate one responsibility including its test and so on. It gets much easier to navigate through and things can be found at a glance.
+
 * Put your additional test files to a separate test folder to avoid confusion.
 
     _why:_
-    > Other developers or DevOps experts may get desperate to know where these stuff are and how to run them.
+    > It is a time saver for other developers or DevOps experts in your team.
 
 * Use a `./config` folder and don't make different config files for different environments.
 
     _why:_
-    >When you break down a config file for different purposes (database, API and so on); putting them in a folder with a very recoginzable name such as `config` makes sense. Just remember not to make different config files for different environments. It doesn't scale cleanly. As more deploys of the app are created, new environment names are necessary.
+    >When you break down a config file for different purposes (database, API and so on); putting them in a folder with a very recognizable name such as `config` makes sense. Just remember not to make different config files for different environments. It doesn't scale cleanly, as more deploys of the app are created, new environment names are necessary.
     Values to be used in config files should provided by environment variables. [read more...](https://medium.com/@fedorHK/no-config-b3f1171eecd5)
     
 
 * Put your scripts in a `./scripts` folder. This includes `bash` and `node` scripts.
 
     _why:_
-    >It's very likely you may end up with more than one script. Production build, Development build, database synchronisation and so on.
+    >It's very likely you may end up with more than one script, production build, development build, database feeders, database synchronisation and so on.
     
 
 * Place your build output in a `./build` folder. Add `build/` to `.gitignore`.
 
     _why:_
-    >Name it what you like, `dist` is also cool. But make sure that keep it consistent with your team. Whet gets in there is most likely generated  (bundled, compiled, transpiled) or moved there. What you can generate, your teammates should be able to generate too, so there is no point commiting them into your remote repository. 
+    >Name it what you like, `dist` is also cool. But make sure that keep it consistent with your team. What gets in there is most likely generated  (bundled, compiled, transpiled) or moved there. What you can generate, your teammates should be able to generate too, so there is no point commiting them into your remote repository. Unless you specifically want to. 
 
 * Use `PascalCase' 'camelCase` for filenames and directory names. Use  `PascalCase`  only for Components.
 
@@ -369,26 +369,58 @@ Before using a package, check its GitHub. Look for the number of open issues, da
     _Why:_
     > It's normal to disable style check while working on a code block to focus more on the logic. Just remember to remove those `eslint-disable` comments and follow the rules.
 
-* Always use  `//TODO:`  comments to remind yourself and others about an unfinished job.
-* Always comment and keep them relevant as code changes.
-* Remove commented block of code when possible.
-* Avoid js alerts in production.
-* Avoid irrelevant or funny comments, logs or naming (source code may get handed over to another company/client and they may not share the same banter).
+* Depending on the size of the task use  `//TODO:` comments or open a ticket.
+
+    _Why:_
+    > So then you can remind yourself and others about a small task (like refactoring a function, or updating a comment). For larger tasks  use `//TODO(#3456)` which is enforced by a lint rule and the number is an open ticket.
+
+
+* Always comment and keep them relevant as code changes. Remove commented blocks of code.
+    
+    _Why:_
+    > Your code should be as readable as possible, you should get rid of anything distraction. If you refactored a function, don't just comment out the old one, remove it.
+
+* Avoid irrelevant or funny comments, logs or naming.
+
+    _Why:_
+    > While your build process may(should) get rid of them, sometimes your source code may get handed over to another company/client and they may not share the same banter.
+
 * Write testable code, avoid side effect, extract side effects, write pure functions.
+
+    _Why:_
+    > A pure function is a function that always returns the same output for the same input. Conversely, an impure function is one that may have side effects or depends on conditions from the outside to produce a value. That makes it less predictable [read more...](https://hackernoon.com/structure-your-javascript-code-for-testability-9bc93d9c72dc)
+
 * Make your names search-able with meaningful distinctions avoid shortened names. For functions Use long, descriptive names. A function name should be a verb or a verb phrase, and it needs to communicate its intention.
-* Organize your functions in a file according to the step-down rule. Higher level functions should be on top and lower levels below. It makes it more natural to read the source code.
+
+    _Why:_
+    > It makes it more natural to read the source code.
+
+* Organize your functions in a file according to the step-down rule. Higher level functions should be on top and lower levels below.
+
+    _Why:_
+    > It makes it more natural to read the source code.
 
 ## 8. Logging <a name="logging"></a>
 * Avoid client-side console logs in production
+
+    _Why:_
+    > Even though it is most likely that your build process gets rid of it, but make sure your code style check gives your warning about console logs.
+
 * Produce readable production logging. Ideally use logging libraries to be used in production mode (such as [winston](https://github.com/winstonjs/winston) or
 [node-bunyan](https://github.com/trentm/node-bunyan)).
 
-## 9 API design <a name="api-design"></a>
-Follow resource-oriented design. This has three main factors: resources, collection, and URLs.
-* A resource has data, relationships to other resources, and methods that operate against it
-* A group of resources is called a collection.
-* URL identifies the online location of a resource.
+    _Why:_
+    > It makes your troubleshooting less unpleasant with colorization, timestamps, log to a file in addition to the console or even logging to a file that rotates daily. [read more...](https://blog.risingstack.com/node-js-logging-tutorial/)
 
+## 9 API design <a name="api-design"></a>
+
+* We mostly follow resource-oriented design. It has three main factors: resources, collection, and URLs.
+    * A resource has data, relationships to other resources, and methods that operate against it
+    * A group of resources is called a collection.
+    * URL identifies the online location of a resource.
+    
+    _Why:_
+    > This is a very well-known design to developers (your main API audience). The core idea of REST is the resource and each resource is identified by a URL, and you retrieve that resource by sending a GET request to that URL. Very simple.
 
 ### 9.1 API Naming
 
@@ -402,8 +434,17 @@ GET 	`/translate?text=Hallo`
 
 #### 9.1.2 Naming fields
 * The request body or response type is JSON then please follow `camelCase` to maintain the consistency.
-* Expose Resources, not your database schema details. You don't have to use your `table_name` for a resource name as well. Same with resource properties, they shouldn't be the same as your column names.
-* Only use nouns in your URL naming and don’t try to explain their functionality and only explain the resources (elegantly).
+    
+    _Why:_
+    > This is a JavaScript project guideline, so we assume your json is being consumed by JavaScript, so we try to keep things consistent.
+
+
+* You don't have to use your `table_name` for a resource name as well. Same with resource properties, they shouldn't be the same as your column names in the database.
+
+    _Why:_
+    > Mostly for security. your intention is to expose Resources, not your database schema details
+
+* Only use nouns in your URL when naming your resources and don’t try to explain their functionality.
 
 
 ### 9.2 Operating on resources
@@ -418,15 +459,16 @@ Only use nouns in your resource URLs, avoid endpoints like `/addNewUser` or `/up
 * **DELETE**	Used to delete existing resources
 
 ### 9.3 Use sub-resources
-Sub resources are used to link one resource with another, so use sub resources to represent the relation.
-An API is supposed to be an interface for developers and this is a natural way to make resources explorable.
-If there is a relation between resources like  employee to a company, use `id` in the URL:
+Sub resources are used to link one resource with another, so use sub resources to represent the relation. If there is a relation between resources like  employee to a company, use `id` in the URL:
 
 * **GET**		`/schools/2/students	`	Should get the list of all students from school 2
 * **GET**		`/schools/2/students/31`	Should get the details of student 31, which belongs to school 2
 * **DELETE**	`/schools/2/students/31`	Should delete student 31, which belongs to school 2
 * **PUT**		`/schools/2/students/31`	Should update info of student 31, Use PUT on resource-URL only, not collection
-* **POST**	`/schools `					Should create a new school and return the details of the new school created. Use POST on collection-URLs
+* **POST**	`/schools `					    Should create a new school and return the details of the new school created. Use POST on collection-URLs
+
+_why:_
+>An API is supposed to be an interface for developers and this is a natural way to make resources explorable.
 
 ### 9.4 API Versioning
 When your APIs are public for other third parties, upgrading the APIs with some breaking change would also lead to breaking the existing products or services using your APIs. Using versions in your URL can prevent that from happening:
@@ -476,6 +518,7 @@ Note: Keep security exception messages as generic as possible. For instance, Ins
 * `403 Forbidden` indicates that the request is valid and the client is authenticated, but the client is not allowed access the page or resource for any reason.
 * `404 Not Found` indicates that the requested resource was not found. 
 * `406 Not Acceptable` A response matching the list of acceptable values defined in Accept-Charset and Accept-Language headers cannot be served.
+* `409 Conflict` The request could not be completed due to a conflict with the current state of the target resource. This code is used in situations where the user might be able to resolve the conflict and resubmit the request.
 * `410 Gone` indicates that the requested resource is no longer available and has been intentionally and permanently moved.
 
 ##### The API behaved incorrectly (server error – 5xx response code)

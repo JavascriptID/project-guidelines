@@ -68,7 +68,7 @@ There are a set of rules to keep in mind:
 * Protect your `develop` and `master` branch .
   
     _Why:_
-    > It protects your production-ready branches from reciving unexpected and irreversible changes. read more... [Github](https://help.github.com/articles/about-protected-branches/) and [Bitbucket](https://confluence.atlassian.com/bitbucketserver/using-branch-permissions-776639807.html)
+    > It protects your production-ready branches from receiving unexpected and irreversible changes. read more... [Github](https://help.github.com/articles/about-protected-branches/) and [Bitbucket](https://confluence.atlassian.com/bitbucketserver/using-branch-permissions-776639807.html)
 
 <a name="git-workflow"></a>
 ### 1.2 Git workflow
@@ -403,7 +403,7 @@ Having a good guideline for creating commits and sticking to it makes working wi
 * Always comment and keep them relevant as code changes. Remove commented blocks of code.
     
     _Why:_
-    > Your code should be as readable as possible, you should get rid of anything distraction. If you refactored a function, don't just comment out the old one, remove it.
+    > Your code should be as readable as possible, you should get rid of anything distracting. If you refactored a function, don't just comment out the old one, remove it.
 
 * Avoid irrelevant or funny comments, logs or naming.
 

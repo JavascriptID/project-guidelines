@@ -1,5 +1,6 @@
 
 [中文版](./README-zh.md)
+[日本語版](./README-ja.md)
 
 [<img src="./images/hive-red-logo.png" width="180" height="180">](http://wearehive.co.uk/)
 
@@ -713,6 +714,7 @@ These are some basic security best practices:
     _Why:_
     > For instance, accepting the `application/x-www-form-urlencoded` mime type allows the attacker to create a form and trigger a simple POST request. The server should never assume the Content-Type. A lack of Content-Type header or an unexpected Content-Type header should result in the server rejecting the content with a `4XX` response.
 
+* Check the API Security Checklist Project. [read more...](https://github.com/shieldfy/API-Security-Checklist)
 
 <a name="api-documentation"></a>
 ### 9.3 API documentation

@@ -76,7 +76,7 @@ There are a set of rules to keep in mind:
 * Protect your `develop` and `master` branch.
   
     _Why:_
-    > It protects your production-ready branches from receiving unexpected and irreversible changes. read more... [Github](https://help.github.com/articles/about-protected-branches/) and [Bitbucket](https://confluence.atlassian.com/bitbucketserver/using-branch-permissions-776639807.html)
+    > It protects your production-ready branches from receiving unexpected and irreversible changes. read more... [Github](https://help.github.com/articles/about-protected-branches/), [Bitbucket](https://confluence.atlassian.com/bitbucketserver/using-branch-permissions-776639807.html) and [GitLab](https://docs.gitlab.com/ee/user/project/protected_branches.html)
 
 <a name="git-workflow"></a>
 ### 1.2 Git workflow
@@ -107,7 +107,7 @@ Because of most of the reasons above, we use [Feature-branch-workflow](https://w
     ```
     
     _Why:_
-    > This will give you a chance to deal with conflicts on your machine while rebasing(later) rather than creating a Pull Request that contains conflicts.
+    > This will give you a chance to deal with conflicts on your machine while rebasing (later) rather than creating a Pull Request that contains conflicts.
     
 * Update your feature branch with latest changes from develop by interactive rebase.
     ```sh
@@ -384,15 +384,6 @@ Having a good guideline for creating commits and sticking to it makes working wi
     _Why:_
     >Name it what you like, `dist` is also cool. But make sure that keep it consistent with your team. What gets in there is most likely generated  (bundled, compiled, transpiled) or moved there. What you can generate, your teammates should be able to generate too, so there is no point committing them into your remote repository. Unless you specifically want to. 
 
-* Use `PascalCase' 'camelCase` for filenames and directory names. Use  `PascalCase`  only for Components.
-
-* `CheckBox/index.js` should have the `CheckBox` component, as could `CheckBox.js`, but **not** `CheckBox/CheckBox.js` or `checkbox/CheckBox.js` which are redundant.
-
-* Ideally the directory name should match the name of the default export of `index.js`.
-
-    _Why:_
-    > Then you can expect what component or module you will receive by simply just importing its parent folder.   
-
 <a name="code-style"></a>
 ## 7. Code style
 
@@ -488,7 +479,7 @@ Having a good guideline for creating commits and sticking to it makes working wi
 * Avoid client-side console logs in production
 
     _Why:_
-    > Even though your build process can(should) get rid of them, make sure that your code style checker warns you about leftover console logs.
+    > Even though your build process can (should) get rid of them, make sure that your code style checker warns you about leftover console logs.
 
 * Produce readable production logging. Ideally use logging libraries to be used in production mode (such as [winston](https://github.com/winstonjs/winston) or
 [node-bunyan](https://github.com/trentm/node-bunyan)).
@@ -679,7 +670,7 @@ The **client app did something wrong** or The **API did something wrong**.
 * Provide total numbers of resources in your response.
 * Accept `limit` and `offset` parameters.
 
-* The amount of data the resource exposes should also be taken into account. The API consumer doesn't always need the full representation of a resource.Use a fields query parameter that takes a comma separated list of fields to include:
+* The amount of data the resource exposes should also be taken into account. The API consumer doesn't always need the full representation of a resource. Use a fields query parameter that takes a comma separated list of fields to include:
     ```
     GET /student?fields=id,name,age,class
     ```
@@ -709,7 +700,7 @@ These are some basic security best practices:
 
 * Your API should convert the received data to their canonical form or reject them. Return 400 Bad Request with details about any errors from bad or missing data.
 
-* All the data exchanged with the ReST API must be validated by the API.
+* All the data exchanged with the REST API must be validated by the API.
 
 * Serialize your JSON.
 
